@@ -1,4 +1,5 @@
 from fastapi import APIRouter
+from starlette import status
 
 import fixtures
 from fixtures import *
@@ -12,7 +13,7 @@ router = APIRouter(prefix="/task", tags=["task"])
     response_model=list[Task]
 )
 async def get_tasks():
-    return tasks
+    return tasks, status.HTTP_200_OK
 
 @router.post(
     '/',
@@ -20,4 +21,4 @@ async def get_tasks():
 )
 async def create_task(body : Task):
     fixtures.tasks.append(body)
-    return body
+    return body, status.HTTP_201_CREATED
