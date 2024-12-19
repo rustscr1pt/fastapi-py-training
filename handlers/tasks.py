@@ -1,19 +1,23 @@
 from fastapi import APIRouter
-from pydantic import BaseModel
+
+import fixtures
+from fixtures import *
+from schema.task import Task
 
 router = APIRouter(prefix="/task", tags=["task"])
 
-@router.get('/all')
+
+@router.get(
+    '/all',
+    response_model=list[Task]
+)
 async def get_tasks():
-    return {'message': 'ok'}
+    return tasks
 
-@router.post('/')
-async def create_task():
-    return {'message': 'app is working'}
-
-class DecodePostRequest(BaseModel):
-    text : str
-
-@router.post('/test')
-async def create_test(post : DecodePostRequest):
-    return {"message" : post.text}
+@router.post(
+    '/',
+    response_model=Task
+)
+async def create_task(body : Task):
+    fixtures.tasks.append(body)
+    return body
